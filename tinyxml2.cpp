@@ -1052,35 +1052,6 @@ char* XMLNode::ParseDeep( char* p, StrPair* parentEndTag, int* curLineNumPtr )
         }
 
         const XMLDeclaration* const decl = node->ToDeclaration();
-        if ( decl ) {
-            // Declarations are only allowed at document level
-            //
-            // Multiple declarations are allowed but all declarations
-            // must occur before anything else. 
-            //
-            // Optimized due to a security test case. If the first node is 
-            // a declaration, and the last node is a declaration, then only 
-            // declarations have so far been added.
-            bool wellLocated = false;
-
-            if (ToDocument()) {
-                if (FirstChild()) {
-                    wellLocated =
-                        FirstChild() &&
-                        FirstChild()->ToDeclaration() &&
-                        LastChild() &&
-                        LastChild()->ToDeclaration();
-                }
-                else {
-                    wellLocated = true;
-                }
-            }
-            if ( !wellLocated ) {
-                _document->SetError( XML_ERROR_PARSING_DECLARATION, initialLineNum, "XMLDeclaration value=%s", decl->Value());
-                DeleteNode( node );
-                break;
-            }
-        }
 
         XMLElement* ele = node->ToElement();
         if ( ele ) {
